@@ -24,9 +24,7 @@ public class Main {
     public static void main(String[] args) {
         Map<Class<?>, Class<?>> interfaceToImplementation = new HashMap<>();
 
-
         interfaceToImplementation.put(Manager.class, CollectionManager.class);
-
 
         ApplicationContext context = new ApplicationContext("Infrastructure.configurators.impl", interfaceToImplementation);
 
