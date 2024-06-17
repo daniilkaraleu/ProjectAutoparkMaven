@@ -32,17 +32,5 @@ public class Main {
 
         context.getObject(CollectionManager.class).getVehicleCollection().display();
 
-//        CollectionManager collectionsManager = new CollectionManager("rents","types", "vehicles");
-//        collectionsManager.init("types", "vehicles");
-
-//        collectionsManager.getVehicleCollection().sort(Vehicle::compareTo);
-//
-//        collectionsManager.getVehicleCollection().display();
-//        collectionsManager.getTypesCollection().sort(Comparator.comparing(VehicleType::getType));
-//
-//        MechanicService mechanic = new MechanicService();
-//
-//        mechanic.detectAndRepair(collectionsManager.getVehicleCollection().getList().getFirst());
-
     }
 }
