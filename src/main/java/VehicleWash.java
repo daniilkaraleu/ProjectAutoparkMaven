@@ -1,5 +1,5 @@
-import Classes.CollectionManager;
-import Classes.Vehicle;
+import Project.Classes.CollectionManager;
+import Project.Classes.Vehicle;
 
 import static java.lang.Thread.sleep;
 
@@ -9,7 +9,7 @@ public class VehicleWash {
     public void startWashing() {
         VehiclesQueue queue = new VehiclesQueue();
 
-        createQueue(queue);
+//        createQueue(queue);
 
         while (queue.size() != 0) {
             washVehicle(queue);
@@ -22,11 +22,11 @@ public class VehicleWash {
         }
     }
 
-    private void createQueue(VehiclesQueue queue) {
-        for (Vehicle vehicle : collectionManager.getVehicleCollection().getList()) {
-            queue.enqueue(vehicle);
-        }
-    }
+//    private void createQueue(VehiclesQueue queue) {
+//        for (Vehicle vehicle : collectionManager.getVehicleCollection().getList()) {
+//            queue.enqueue(vehicle);
+//        }
+//    }
 
     private void washVehicle(VehiclesQueue queue) {
         System.out.println(queue.dequeue().getModel() + " is Washing...");

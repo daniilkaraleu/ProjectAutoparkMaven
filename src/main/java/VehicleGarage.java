@@ -1,4 +1,4 @@
-import Classes.Vehicle;
+import Project.Classes.Vehicle;
 
 public class VehicleGarage {
     private static final int GARAGE_SIZE = 3;

@@ -1,23 +1,19 @@
-import Classes.CollectionManager;
-import Classes.Collections.AbstractAutoCollection;
-import Classes.Collections.VehicleCollection;
-import Infrastructure.config.Config;
-import Infrastructure.config.impl.JavaConfig;
-import Infrastructure.configurators.ObjectConfigurator;
-import Infrastructure.configurators.impl.AutowiredObjectConfigurator;
-import Infrastructure.core.Cache;
-import Infrastructure.core.Context;
-import Infrastructure.core.ObjectFactory;
-import Infrastructure.core.impl.ApplicationContext;
-import Infrastructure.core.impl.CacheImpl;
-import Infrastructure.core.impl.ObjectFactoryImpl;
-import Infrastructure.core.impl.ScannerImpl;
-import Infrastructure.core.Scanner;
-import Classes.interfaces.Manager;
+import Project.Classes.CollectionManager;
+import Project.Classes.Collections.VehicleCollection;
+import Project.Classes.MechanicService;
+import Project.Classes.VehicleType;
+import Project.Classes.Workroom;
+import Project.Classes.interfaces.Fixer;
+import Project.Classes.Infrastructure.core.Context;
+import Project.Classes.Infrastructure.core.impl.ApplicationContext;
+import Project.Classes.interfaces.Manager;
+import Project.Classes.Infrastructure.dto.ConnectionFactory;
+import Project.Classes.Infrastructure.dto.EntityManager;
+import Project.Classes.Infrastructure.dto.impl.ConnectionFactoryImpl;
+import Project.Classes.Infrastructure.dto.impl.EntityManagerImpl;
 import lombok.SneakyThrows;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Main {
     @SneakyThrows
@@ -25,10 +21,16 @@ public class Main {
         Map<Class<?>, Class<?>> interfaceToImplementation = new HashMap<>();
 
         interfaceToImplementation.put(Manager.class, CollectionManager.class);
+        interfaceToImplementation.put(EntityManager.class, EntityManagerImpl.class);
+        interfaceToImplementation.put(ConnectionFactory.class, ConnectionFactoryImpl.class);
+        interfaceToImplementation.put(Context.class, ApplicationContext.class);
+        interfaceToImplementation.put(Fixer.class, MechanicService.class);
 
-        ApplicationContext context = new ApplicationContext("Infrastructure.configurators.impl", interfaceToImplementation);
+        ApplicationContext context = new ApplicationContext("Project", interfaceToImplementation);
+        VehicleCollection collection = context.getObject(CollectionManager.class).getVehicleCollection();
+        context.getObject(Workroom.class).checkAllVehicle(collection.getList());
 
-        context.getObject(CollectionManager.class).getVehicleCollection().display();
+        collection.display();
 
     }
 }
