@@ -48,6 +48,10 @@ public class PostgreDataBase {
                     INSERT INTO %s(%s)
                     VALUES (%s)
                     RETURNING %s;""";
+    private static final String DELETE_SQL_PATTERN =
+            """
+                    TRUNCATE TABLE %s
+                    """;
     @Autowired
     private ConnectionFactory connectionFactory;
 
@@ -68,10 +72,6 @@ public class PostgreDataBase {
 
         insertPatternByClass = Arrays.stream(SqlFieldType.values())
                 .collect(Collectors.toMap(key -> key.getType().getName(), SqlFieldType::getInsertPattern));
-
-//        if (!checkId_seqIsPresent()) {
-//            createSeq();
-//        }
 
         Set<Class<?>> entitiesSet = getEntities();
 
@@ -216,7 +216,7 @@ public class PostgreDataBase {
         Arrays.stream(clazz.getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(Column.class))
                 .forEach(field -> {
-                    stbFields.append(field.getName()).append(", ");
+                    stbFields.append(field.getAnnotation(Column.class).name()).append(", ");
                     stbValues.append(insertPatternByClass.get(field.getType().getName())).append(", ");
                 });
 
@@ -307,6 +307,19 @@ public class PostgreDataBase {
         }
 
         return objectsList;
+    }
+
+    public void deleteData(Class<?> clazz){
+        String tableName = clazz.getAnnotation(Table.class).name();
+
+        String sql = String.format(DELETE_SQL_PATTERN, tableName);
+
+        try (Statement statement = connectionFactory.getConnection().createStatement()){
+            statement.execute(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @SneakyThrows

@@ -32,4 +32,9 @@ public class EntityManagerImpl implements EntityManager {
     public void creteSeq(String seqName) {
         dataBaseService.createSeq(seqName);
     }
+
+    @Override
+    public void deleteData(Class<?> clazz) {
+        dataBaseService.deleteData(clazz);
+    }
 }

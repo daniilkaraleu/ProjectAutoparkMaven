@@ -11,5 +11,6 @@ public interface EntityManager extends Manager {
 
     Long save(Object object);
     void creteSeq(String seqName);
+    void deleteData(Class<?> clazz);
 }
 

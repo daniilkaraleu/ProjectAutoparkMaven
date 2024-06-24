@@ -25,6 +25,7 @@ public class CreateType  {
         return new VehicleType(types.getId(), types.getName(), types.getCoefTaxes());
     }
     public static Vehicle createVehicle(Vehicles vehicles){
+
         VehicleColors color = VehicleColors.valueOf(vehicles.getColor());
         Engine engine = createEngine(parserFromDB.getEngineService().get(vehicles.getId()));
         VehicleType type = createVehicleType(parserFromDB.getTypesService().get(vehicles.getType()));

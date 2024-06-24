@@ -1,6 +1,7 @@
 package Project.Classes;
 
 import Project.Classes.Infrastructure.core.annotations.Autowired;
+import Project.Classes.Infrastructure.dto.impl.ParserVehiclesFromDB;
 import Project.Classes.interfaces.Fixer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
