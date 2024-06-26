@@ -53,15 +53,14 @@ public class PostgreDataBase {
                     TRUNCATE TABLE %s
                     """;
     @Autowired
+    private Context context;
+    @Autowired
     private ConnectionFactory connectionFactory;
-
-
     private Map<String, String> classToSql;
 
     private Map<String, String> insertPatternByClass;
     private Map<String, String> insertByClassPattern;
-    @Autowired
-    private Context context;
+
 
     public PostgreDataBase() {}
 

@@ -1,6 +1,7 @@
 package Project.Classes.Infrastructure.core.impl;
 
 import Project.Classes.Infrastructure.configurators.ObjectConfigurator;
+import Project.Classes.Infrastructure.configurators.ProxyConfigurator;
 import Project.Classes.Infrastructure.core.Context;
 import Project.Classes.Infrastructure.core.ObjectFactory;
 import Project.Classes.Infrastructure.core.annotations.InitMethod;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 public class ObjectFactoryImpl implements ObjectFactory {
     private Context context;
     private List<ObjectConfigurator> objectConfigurators = new ArrayList<>();
+    private List<ProxyConfigurator> proxyConfigurators = new ArrayList<>();
 
     @SneakyThrows
     public ObjectFactoryImpl(Context context) {
@@ -34,11 +36,29 @@ public class ObjectFactoryImpl implements ObjectFactory {
                 })
                 .collect(Collectors.toList());
 
+        proxyConfigurators = context
+                .getConfig()
+                .getScanner()
+                .getSubTypesOf(ProxyConfigurator.class)
+                .stream()
+                .map(clazz -> {
+                    try {
+                        return clazz.getConstructor().newInstance();
+                    } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+
     }
 
     @Override
     public <T> T createObject(Class<T> implementation) throws Exception{
-        return initialize(implementation, configure(create(implementation)));
+
+        T instance = configure(create(implementation));
+        instance = makeProxy(implementation, instance);
+
+        return initialize(implementation, instance);
     }
 
     private <T> T create(Class<T> implementation) throws Exception{
@@ -60,6 +80,13 @@ public class ObjectFactoryImpl implements ObjectFactory {
                 method.invoke(instance);
         }
 
+        return instance;
+    }
+
+    private <T> T makeProxy(Class<T> implementation, T instance){
+        for (ProxyConfigurator proxyConfigurator : proxyConfigurators) {
+            instance = proxyConfigurator.makeProxy(instance, implementation, context);
+        }
         return instance;
     }
 }
