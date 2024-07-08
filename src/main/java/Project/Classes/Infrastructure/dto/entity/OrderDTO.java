@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Orders {
+public class OrderDTO {
     @ID(name = "id")
     private Long id;
     @Column(name = "vehicleId")

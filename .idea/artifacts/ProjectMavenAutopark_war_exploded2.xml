@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="ProjectMavenAutopark:war exploded2">
+    <output-path>$PROJECT_DIR$/out/artifacts/ProjectMavenAutopark_war_exploded2</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="ProjectMavenAutopark" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: org.reflections:reflections:0.10.2" />
+          <element id="library" level="project" name="Maven: org.javassist:javassist:3.28.0-GA" />
+          <element id="library" level="project" name="Maven: com.google.code.findbugs:jsr305:3.0.2" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.32" />
+          <element id="library" level="project" name="Maven: org.postgresql:postgresql:42.7.3" />
+          <element id="library" level="project" name="Maven: org.checkerframework:checker-qual:3.42.0" />
+          <element id="library" level="project" name="Maven: cglib:cglib-nodep:3.3.0" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="ProjectMavenAutopark/web/Web" />
+    </root>
+  </artifact>
+</component>

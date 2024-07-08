@@ -11,6 +11,7 @@ import lombok.SneakyThrows;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Field;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -62,7 +63,8 @@ public class PostgreDataBase {
     private Map<String, String> insertByClassPattern;
 
 
-    public PostgreDataBase() {}
+    public PostgreDataBase() {
+    }
 
     @InitMethod
     public void init() throws NoSuchFieldException {
@@ -80,7 +82,7 @@ public class PostgreDataBase {
             throw new RuntimeException(e);
         }
 
-        checkOrCreateTable(entitiesSet);
+//        checkOrCreateTable(entitiesSet);
 
         insertByClassPattern = entitiesSet.stream().collect(Collectors.toMap(Class::getName, this::getInsertSQLRequest));
 
@@ -129,12 +131,15 @@ public class PostgreDataBase {
                 throw new SQLException(String.format("Table %s has no Id field", entity.getSimpleName()));
             }
 
-            long amountOfColumns = Arrays.stream(entity.getDeclaredFields())
+            long amountOfDistinctColumns = Arrays.stream(entity.getDeclaredFields())
                     .filter(field -> field.isAnnotationPresent(Column.class))
                     .distinct()
                     .count();
+            long amountOfColumns = Arrays.stream(entity.getDeclaredFields())
+                    .filter(field -> field.isAnnotationPresent(Column.class))
+                    .count();
 
-            if ( amountOfColumns != entity.getDeclaredFields().length - 1) {
+            if (amountOfDistinctColumns != amountOfColumns) {
                 throw new SQLException(String.format("Table %s has repeating fields", entity.getSimpleName()));
             }
         }
@@ -278,7 +283,7 @@ public class PostgreDataBase {
              ResultSet resultSet = statement.executeQuery(sql)) {
 
             resultSet.next();
-            return Optional.of(makeObject(resultSet,clazz));
+            return Optional.of(makeObject(resultSet, clazz));
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -294,12 +299,12 @@ public class PostgreDataBase {
         String sql = "SELECT * FROM " + tableName;
         List<T> objectsList = new ArrayList<>();
 
-        try(Statement statement = connectionFactory.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(sql)){
+        try (Statement statement = connectionFactory.getConnection().createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
 
-         while (resultSet.next()) {
-             objectsList.add(makeObject(resultSet, clazz));
-         }
+            while (resultSet.next()) {
+                objectsList.add(makeObject(resultSet, clazz));
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -308,12 +313,13 @@ public class PostgreDataBase {
         return objectsList;
     }
 
-    public void deleteData(Class<?> clazz){
+    public void deleteData(Class<?> clazz) {
         String tableName = clazz.getAnnotation(Table.class).name();
 
         String sql = String.format(DELETE_SQL_PATTERN, tableName);
 
-        try (Statement statement = connectionFactory.getConnection().createStatement()){
+        try (Connection connection = connectionFactory.getConnection();
+             Statement statement = connection.createStatement()) {
             statement.execute(sql);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -327,7 +333,8 @@ public class PostgreDataBase {
 
         Arrays.stream(clazz.getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(ID.class))
-                .forEach(field -> {field.setAccessible(true);
+                .forEach(field -> {
+                    field.setAccessible(true);
                     try {
                         field.set(object, resultSet.getObject(field.getAnnotation(ID.class).name()));
                     } catch (IllegalAccessException | SQLException e) {
@@ -337,7 +344,8 @@ public class PostgreDataBase {
 
         Arrays.stream(clazz.getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(Column.class))
-                .forEach(field -> {field.setAccessible(true);
+                .forEach(field -> {
+                    field.setAccessible(true);
                     try {
                         field.set(object, resultSet.getObject(field.getAnnotation(Column.class).name()));
                     } catch (IllegalAccessException | SQLException e) {

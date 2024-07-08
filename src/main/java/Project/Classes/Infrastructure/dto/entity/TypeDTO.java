@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Types {
+public class TypeDTO {
     @ID(name = "id")
     private Long id;
     @Column(name = "name", unique = true)

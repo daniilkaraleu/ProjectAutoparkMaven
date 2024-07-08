@@ -2,7 +2,6 @@ package Project.Classes;
 
 import Project.Classes.Engines.Engine;
 import Project.Classes.interfaces.Displayable;
-import Project.Classes.Engines.interfaces.Startable;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,10 +23,17 @@ public class Vehicle implements Comparable<Vehicle> , Displayable {
     private double mileage;
     private VehicleColors color;
     private double tankVolume;
-    private Startable engine;
+    private Engine engine;
     private Long vehicleId;
     private List<Rent> rentHistory;
 
+    private Boolean wasWorking;
+    private Boolean fixed;
+
+    {
+        wasWorking = false;
+        fixed = true;
+    }
 
     public Vehicle(Long vehicleId,
                    VehicleType vehicleType,
@@ -67,18 +73,10 @@ public class Vehicle implements Comparable<Vehicle> , Displayable {
         }
     }
 
-    public double getTotalIncome() {
-        double totalIncome = 0;
 
-        for (Rent rent : this.rentHistory) {
-            totalIncome += rent.getRentCost();
-        }
-
-        return totalIncome;
-    }
 
     public double getTotalProfit() {
-        return this.getTotalIncome() - this.getCalcTaxPerMonth();
+        return this.getRentsIncome() - this.getCalcTaxPerMonth();
     }
 
     @Override
@@ -107,5 +105,8 @@ public class Vehicle implements Comparable<Vehicle> , Displayable {
         } else {
             return (int) this.mileage - (int) vehicle.mileage;
         }
+    }
+    public double getRentsIncome(){
+        return rentHistory.stream().mapToDouble(Rent::getRentCost).sum();
     }
 }

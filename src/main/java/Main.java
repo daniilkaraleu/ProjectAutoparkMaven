@@ -1,8 +1,7 @@
-import Project.Classes.CollectionManager;
+import Project.Classes.*;
 import Project.Classes.Collections.VehicleCollection;
-import Project.Classes.MechanicService;
-import Project.Classes.VehicleType;
-import Project.Classes.Workroom;
+import Project.Classes.Infrastructure.dto.service.RentsService;
+import Project.Classes.Infrastructure.dto.service.VehiclesService;
 import Project.Classes.interfaces.Fixer;
 import Project.Classes.Infrastructure.core.Context;
 import Project.Classes.Infrastructure.core.impl.ApplicationContext;
@@ -28,9 +27,11 @@ public class Main {
 
         ApplicationContext context = new ApplicationContext("Project", interfaceToImplementation);
         VehicleCollection collection = context.getObject(CollectionManager.class).getVehicleCollection();
-        context.getObject(Workroom.class).checkAllVehicle(collection.getList());
+        VehicleGarageManager vehicleGarageManager = context.getObject(VehicleGarageManager.class);
 
-        collection.display();
+        vehicleGarageManager.vehicleToGarage(context.getObject(VehiclesService.class), context.getObject(MechanicService.class), context.getObject(RentsService.class));
+
+        Thread.sleep(200000);
 
     }
 }

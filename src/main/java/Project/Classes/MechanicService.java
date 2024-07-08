@@ -1,9 +1,8 @@
 package Project.Classes;
 
 import Project.Classes.Infrastructure.core.annotations.Autowired;
-import Project.Classes.Infrastructure.dto.PostgreDataBase;
 import Project.Classes.Infrastructure.dto.annotations.Column;
-import Project.Classes.Infrastructure.dto.entity.Orders;
+import Project.Classes.Infrastructure.dto.entity.OrderDTO;
 import Project.Classes.Infrastructure.dto.service.OrdersService;
 import Project.Classes.interfaces.Fixer;
 import Project.Classes.UtilFiles.CSVReadWrite;
@@ -21,11 +20,8 @@ import java.util.stream.Collectors;
 public class MechanicService implements Fixer {
     public static final String[] DETAILS = {"фильтр", "втулка", "вал", "ось", "свеча", "масло", "ГРМ", "шрус"};
     final Path FILE_PATH = (Paths.get("D:/JavaProjects/AutoparkProject/src/CSV/orders.csv"));
-    static final int AMOUNT_OF_BROKEN_DETAILS = 3;
+    static final int AMOUNT_OF_BROKEN_DETAILS = 2;
     final Charset utf8 = StandardCharsets.UTF_8;
-
-    @Autowired
-    private PostgreDataBase dataBase;
     @Autowired
     private OrdersService ordersService;
 
@@ -38,7 +34,7 @@ public class MechanicService implements Fixer {
     public Map<String, Integer> detectBreaking(Vehicle vehicle) {
         Map<String, Integer> detailsToRepair = new HashMap<>();
 
-        Orders orders = new Orders();
+        OrderDTO orders = new OrderDTO();
 
         Arrays.stream(DETAILS)
                 .forEach(detail -> detailsToRepair.put(detail, ((int) (Math.random() * AMOUNT_OF_BROKEN_DETAILS))));
@@ -57,10 +53,10 @@ public class MechanicService implements Fixer {
                     field.set(orders, detailsToRepair.get(field.getAnnotation(Column.class).name()));
             }
         }
-
-        ordersService.save(orders);
-
-        CSVReadWrite.makeRecord(LineProcessor.transformToCSVLine(vehicle, detailsToRepair), FILE_PATH);
+        if (Math.random() > 0.5) {
+            ordersService.save(orders);
+            CSVReadWrite.makeRecord(LineProcessor.transformToCSVLine(vehicle, detailsToRepair), FILE_PATH);
+        }
 
         return detailsToRepair.entrySet()
                 .stream()
@@ -70,7 +66,7 @@ public class MechanicService implements Fixer {
 
     @Override
     public void repair(Vehicle vehicle) {
-        ordersService.deleteData(Orders.class);
+        ordersService.deleteData(OrderDTO.class);
         if (isBroken(vehicle)) {
             System.out.println(vehicle.getModel() + " Was fixed");
             CSVReadWrite.clearFile(FILE_PATH);

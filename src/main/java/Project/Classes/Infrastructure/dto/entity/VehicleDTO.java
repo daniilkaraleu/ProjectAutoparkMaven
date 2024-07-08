@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Vehicles {
+public class VehicleDTO {
     @ID(name = "id")
     private Long id;
     @Column(name = "model")
@@ -33,4 +33,15 @@ public class Vehicles {
     private String engine;
     @Column(name = "color")
     private String color;
+
+    private String typeName;
+    private double taxCoefficient;
+    private double engineTaxCoefficient;
+    private double per100km;
+    private double maxKm;
+    private double tax;
+    private double income;
+    private double rentIncome;
+    private Boolean wasBroken;
+    private Boolean fixed;
 }

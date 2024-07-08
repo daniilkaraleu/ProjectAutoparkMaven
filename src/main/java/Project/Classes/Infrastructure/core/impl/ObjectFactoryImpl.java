@@ -55,8 +55,8 @@ public class ObjectFactoryImpl implements ObjectFactory {
     @Override
     public <T> T createObject(Class<T> implementation) throws Exception{
 
-        T instance = configure(create(implementation));
-        instance = makeProxy(implementation, instance);
+        T instance = makeProxy(implementation, create(implementation));
+        instance = configure(instance);
 
         return initialize(implementation, instance);
     }

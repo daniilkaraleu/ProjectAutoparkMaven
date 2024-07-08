@@ -1,25 +1,24 @@
 package Project.Classes.Infrastructure.dto.entity;
 
+
 import Project.Classes.Infrastructure.dto.annotations.Column;
 import Project.Classes.Infrastructure.dto.annotations.ID;
 import Project.Classes.Infrastructure.dto.annotations.Table;
 import lombok.*;
 
 @ToString
-@Table(name = "engines")
+@Table(name = "rents")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Engines {
+public class RentDTO {
     @ID(name = "id")
     private Long id;
-    @Column(name = "name")
-    private String name;
-    @Column(name = "engineCapacity", nullable = false)
-    private Double engineCapacity;
-    @Column(name = "fuelConsumption")
-    private Double fuelConsumption;
-    @Column(name = "tankCapacity")
-    private Double tankCapacity;
+    @Column(name = "vehicleId")
+    private Long vehicleId;
+    @Column(name = "rentDate")
+    private String rentDate;
+    @Column(name = "rentCost")
+    private Double rentCost;
 }

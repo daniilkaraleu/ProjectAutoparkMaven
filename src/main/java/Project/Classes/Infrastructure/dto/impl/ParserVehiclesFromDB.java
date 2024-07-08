@@ -17,5 +17,4 @@ public class ParserVehiclesFromDB implements ParserVehiclesInterface {
     private EngineService engineService;
     @Autowired
     private OrdersService ordersService;
-
 }
