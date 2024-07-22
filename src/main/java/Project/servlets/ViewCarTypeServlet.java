@@ -12,6 +12,7 @@ import Project.Classes.Infrastructure.dto.service.TypesService;
 import Project.Classes.MechanicService;
 import Project.Classes.interfaces.Fixer;
 import Project.Classes.interfaces.Manager;
+import Project.servlets.utils.InterfaceToImplementation;
 import lombok.SneakyThrows;
 
 import javax.servlet.RequestDispatcher;
@@ -34,15 +35,7 @@ public class ViewCarTypeServlet extends HttpServlet {
     @SneakyThrows
     @Override
     public void init() throws ServletException {
-        Map<Class<?>, Class<?>> interfaceToImplementation = new HashMap<>();
-
-        interfaceToImplementation.put(Manager.class, CollectionManager.class);
-        interfaceToImplementation.put(EntityManager.class, EntityManagerImpl.class);
-        interfaceToImplementation.put(ConnectionFactory.class, ConnectionFactoryImpl.class);
-        interfaceToImplementation.put(Context.class, ApplicationContext.class);
-        interfaceToImplementation.put(Fixer.class, MechanicService.class);
-
-        ApplicationContext context = new ApplicationContext("Project", interfaceToImplementation);
+        ApplicationContext context = new ApplicationContext("Project", InterfaceToImplementation.interfaceToImplementation);
         typesService = context.getObject(TypesService.class);
 
         super.init();

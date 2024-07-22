@@ -6,6 +6,7 @@ import Project.Classes.Infrastructure.core.annotations.InitMethod;
 import Project.Classes.Infrastructure.dto.annotations.Column;
 import Project.Classes.Infrastructure.dto.annotations.ID;
 import Project.Classes.Infrastructure.dto.annotations.Table;
+import Project.Classes.Infrastructure.dto.enums.SQLPatterns;
 import Project.Classes.Infrastructure.dto.enums.SqlFieldType;
 import lombok.SneakyThrows;
 import org.reflections.Reflections;
@@ -19,40 +20,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PostgreDataBase {
-    private static final String SEQ_NAME = "id_seq";
-    private static final String CHECK_TABLE_SQL_PATTERN =
-            """
-                    SELECT EXISTS (
-                    SELECT FROM information_schema.tables
-                    WHERE table_schema = 'public'
-                    AND table_name = '%s'
-                    );""";
-    private static final String CHECK_SEQ_SQL_PATTERN =
-            """
-                    SELECT EXISTS (
-                    SELECT FROM information_schema.sequences
-                    WHERE sequence_schema = 'public'
-                    AND sequence_name = '%s'
-                    );""";
-    private static final String CREATE_ID_SEQ_PATTERN =
-            """
-                    CREATE SEQUENCE %S
-                    INCREMENT 1
-                    START 1;""";
-    private static final String CREATE_TABLE_SEQ_PATTERN =
-            """
-                    CREATE TABLE %s (
-                    %s int8 PRIMARY KEY DEFAULT nextval('%s'),
-                    %s);""";
-    private static final String INSERT_SQL_PATTERN =
-            """
-                    INSERT INTO %s(%s)
-                    VALUES (%s)
-                    RETURNING %s;""";
-    private static final String DELETE_SQL_PATTERN =
-            """
-                    TRUNCATE TABLE %s
-                    """;
     @Autowired
     private Context context;
     @Autowired
@@ -89,7 +56,7 @@ public class PostgreDataBase {
     }
 
     private boolean checkId_seqIsPresent(String seqName) {
-        String sql = String.format(CHECK_SEQ_SQL_PATTERN, seqName);
+        String sql = String.format(SQLPatterns.CHECK_SEQ_SQL_PATTERN.pattern, seqName);
 
         try (Statement statement = connectionFactory.getConnection().createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
@@ -101,7 +68,7 @@ public class PostgreDataBase {
     }
 
     public void createSeq(String seqName) {
-        final String sql = String.format(CREATE_ID_SEQ_PATTERN, seqName);
+        final String sql = String.format(SQLPatterns.CREATE_ID_SEQ_PATTERN.pattern, seqName);
         if (checkId_seqIsPresent(seqName))
             return;
 
@@ -147,7 +114,7 @@ public class PostgreDataBase {
 
     private void checkOrCreateTable(Set<Class<?>> set) {
         for (Class<?> entity : set) {
-            String sql = String.format(CHECK_TABLE_SQL_PATTERN, entity.getAnnotation(Table.class).name());
+            String sql = String.format(SQLPatterns.CHECK_TABLE_SQL_PATTERN.pattern, entity.getAnnotation(Table.class).name());
 
             try (Statement statement = connectionFactory.getConnection().createStatement();
                  ResultSet resultSet = statement.executeQuery(sql)) {
@@ -193,7 +160,7 @@ public class PostgreDataBase {
 
         createSeq(seqName);
 
-        String sql = String.format(CREATE_TABLE_SEQ_PATTERN, tableName, idField, seqName, fields);
+        String sql = String.format(SQLPatterns.CREATE_TABLE_SEQ_PATTERN.pattern, tableName, idField, seqName, fields);
 
         try (Statement statement = connectionFactory.getConnection().createStatement()) {
             statement.execute(sql);
@@ -227,7 +194,7 @@ public class PostgreDataBase {
         fields = stbFields.deleteCharAt(stbFields.lastIndexOf(",")).toString().trim();
         values = stbValues.deleteCharAt(stbValues.lastIndexOf(",")).toString().trim();
 
-        String sql = String.format(INSERT_SQL_PATTERN, tableName, fields, values, idFieldName);
+        String sql = String.format(SQLPatterns.INSERT_SQL_PATTERN.pattern, tableName, fields, values, idFieldName);
         return sql;
     }
 
@@ -316,12 +283,27 @@ public class PostgreDataBase {
     public void deleteData(Class<?> clazz) {
         String tableName = clazz.getAnnotation(Table.class).name();
 
-        String sql = String.format(DELETE_SQL_PATTERN, tableName);
+        String sql = String.format(SQLPatterns.DELETE_ALL_SQL_PATTERN.pattern, tableName);
 
         try (Connection connection = connectionFactory.getConnection();
              Statement statement = connection.createStatement()) {
             statement.execute(sql);
         } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void delete(long id, Class<?> clazz){
+        String tableName = clazz.getAnnotation(Table.class).name();
+
+        String sql = String.format(SQLPatterns.DELETE_SQL_PATTERN.pattern, tableName, id);
+
+        try (Connection connection = connectionFactory.getConnection();
+        Statement statement = connection.createStatement()){
+            statement.execute(sql);
+        }
+        catch (SQLException e){
             throw new RuntimeException(e);
         }
 

@@ -4,6 +4,7 @@ import Project.Classes.Infrastructure.core.annotations.Autowired;
 import Project.Classes.Infrastructure.core.annotations.InitMethod;
 import Project.Classes.Infrastructure.dto.EntityManager;
 import Project.Classes.Infrastructure.dto.Service;
+import Project.Classes.Infrastructure.dto.entity.OrderDTO;
 import Project.Classes.Infrastructure.dto.entity.TypeDTO;
 
 import java.util.List;
@@ -29,5 +30,11 @@ public class TypesService implements Service<TypeDTO> {
 
     public Long save(TypeDTO type){
         return entityManager.save(type);
+    }
+    public void deleteData(){
+        entityManager.deleteData(TypeDTO.class);
+    }
+    public void delete(long id){
+        entityManager.delete(id, TypeDTO.class);
     }
 }

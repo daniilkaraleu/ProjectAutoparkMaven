@@ -13,6 +13,7 @@ import Project.Classes.Infrastructure.dto.service.VehiclesService;
 import Project.Classes.MechanicService;
 import Project.Classes.interfaces.Fixer;
 import Project.Classes.interfaces.Manager;
+import Project.servlets.utils.InterfaceToImplementation;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -31,15 +32,7 @@ public class ViewInfoServlet extends HttpServlet {
     private RentsService rentsService;
     @Override
     public void init() throws ServletException {
-        Map<Class<?>, Class<?>> interfaceToImplementation = new HashMap<>();
-
-        interfaceToImplementation.put(Manager.class, CollectionManager.class);
-        interfaceToImplementation.put(EntityManager.class, EntityManagerImpl.class);
-        interfaceToImplementation.put(ConnectionFactory.class, ConnectionFactoryImpl.class);
-        interfaceToImplementation.put(Context.class, ApplicationContext.class);
-        interfaceToImplementation.put(Fixer.class, MechanicService.class);
-
-        ApplicationContext context = new ApplicationContext("Project", interfaceToImplementation);
+        ApplicationContext context = new ApplicationContext("Project", InterfaceToImplementation.interfaceToImplementation);
         try {
             vehiclesService = context.getObject(VehiclesService.class);
             typesService = context.getObject(TypesService.class);
@@ -52,12 +45,6 @@ public class ViewInfoServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
         long id = Long.parseLong(req.getParameter("id"));
 
         req.setAttribute("car", vehiclesService.get(id));

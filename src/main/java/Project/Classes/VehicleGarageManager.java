@@ -1,6 +1,6 @@
 package Project.Classes;
 
-import Project.Classes.Infrastructure.dto.entity.MapperForDB;
+import Project.Classes.Infrastructure.dto.entity.mappers.MapperForDB;
 import Project.Classes.Infrastructure.dto.service.RentsService;
 import Project.Classes.Infrastructure.dto.service.VehiclesService;
 import Project.Classes.Infrastructure.threads.annotations.Schedule;

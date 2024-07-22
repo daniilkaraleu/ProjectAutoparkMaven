@@ -2,7 +2,7 @@ package Project.Classes.Engines;
 
 import Project.Classes.Engines.interfaces.Startable;
 
-abstract public class Engine implements Startable {
+abstract public class Engine implements Startable, Cloneable {
     private double taxPerMonth;
     private String name;
 
@@ -31,5 +31,8 @@ abstract public class Engine implements Startable {
     @Override
     public String toString() {
         return  taxPerMonth + "," + name ;
+    }
+    public Engine clone() throws CloneNotSupportedException{
+        return (Engine) super.clone();
     }
 }

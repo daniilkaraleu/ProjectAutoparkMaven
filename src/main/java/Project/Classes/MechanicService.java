@@ -30,8 +30,7 @@ public class MechanicService implements Fixer {
         return vehicles.stream().filter(vehicle -> !isBroken(vehicle)).collect(Collectors.toList());
     }
 @SneakyThrows
-    @Override
-    public Map<String, Integer> detectBreaking(Vehicle vehicle) {
+    public void detectBreaking(Vehicle vehicle) {
         Map<String, Integer> detailsToRepair = new HashMap<>();
 
         OrderDTO orders = new OrderDTO();
@@ -58,19 +57,24 @@ public class MechanicService implements Fixer {
             CSVReadWrite.makeRecord(LineProcessor.transformToCSVLine(vehicle, detailsToRepair), FILE_PATH);
         }
 
-        return detailsToRepair.entrySet()
-                .stream()
-                .filter(x -> x.getValue() != 0)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     @Override
     public void repair(Vehicle vehicle) {
-        ordersService.deleteData(OrderDTO.class);
+        ordersService.deleteData();
+
         if (isBroken(vehicle)) {
             System.out.println(vehicle.getModel() + " Was fixed");
             CSVReadWrite.clearFile(FILE_PATH);
         }
+    }
+    public void repair(long id) {
+        ordersService.delete(id);
+
+//        if (isBroken()) {
+//            System.out.println(vehicle.getModel() + " Was fixed");
+//            CSVReadWrite.clearFile(FILE_PATH);
+//        }
     }
 
     @Override

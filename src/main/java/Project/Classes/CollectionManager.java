@@ -1,6 +1,6 @@
 package Project.Classes;
 
-import Project.Classes.Infrastructure.dto.entity.MapperForDB;
+import Project.Classes.Infrastructure.dto.entity.mappers.MapperForDB;
 import Project.Classes.Collections.RentCollection;
 import Project.Classes.Collections.TypesCollection;
 import Project.Classes.Collections.VehicleCollection;

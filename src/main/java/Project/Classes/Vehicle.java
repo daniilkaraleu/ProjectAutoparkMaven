@@ -5,12 +5,14 @@ import Project.Classes.interfaces.Displayable;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Getter
 @Setter
-public class Vehicle implements Comparable<Vehicle> , Displayable {
+public class Vehicle implements Comparable<Vehicle> , Displayable, Cloneable {
     private static final double MASS_COEF = 0.0013;
     private static final double VEHICLE_TYPE_COEF = 30;
     private static final double FREE_TERM_OF_TAX = 5;
@@ -65,6 +67,7 @@ public class Vehicle implements Comparable<Vehicle> , Displayable {
         return (mass * MASS_COEF) + (vehicleType.getTaxCoefficient() * engine.getTaxPerMonth() * VEHICLE_TYPE_COEF) + FREE_TERM_OF_TAX;
     }
 
+
     public void setEngine(Engine engine) {
         try {
             this.engine = engine;
@@ -99,6 +102,14 @@ public class Vehicle implements Comparable<Vehicle> , Displayable {
     }
 
     @Override
+    public Vehicle clone() throws CloneNotSupportedException {
+        Vehicle clonedVehicle = (Vehicle) super.clone();
+        clonedVehicle.engine = this.getEngine().clone();
+
+        return clonedVehicle;
+    }
+
+    @Override
     public int compareTo(Vehicle vehicle) {
         if (this.getYearOfManufacture() - vehicle.getYearOfManufacture() != 0) {
             return this.getYearOfManufacture() - vehicle.getYearOfManufacture();
@@ -109,4 +120,5 @@ public class Vehicle implements Comparable<Vehicle> , Displayable {
     public double getRentsIncome(){
         return rentHistory.stream().mapToDouble(Rent::getRentCost).sum();
     }
+
 }

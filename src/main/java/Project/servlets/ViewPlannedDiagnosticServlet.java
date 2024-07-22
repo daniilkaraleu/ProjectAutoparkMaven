@@ -1,22 +1,14 @@
 package Project.servlets;
 
-import Project.Classes.CollectionManager;
-import Project.Classes.Infrastructure.dto.entity.MapperForDB;
-import Project.Classes.Infrastructure.core.Context;
+import Project.Classes.Infrastructure.dto.entity.mappers.MapperForDB;
 import Project.Classes.Infrastructure.core.impl.ApplicationContext;
-import Project.Classes.Infrastructure.dto.ConnectionFactory;
-import Project.Classes.Infrastructure.dto.EntityManager;
 import Project.Classes.Infrastructure.dto.entity.OrderDTO;
-import Project.Classes.Infrastructure.dto.impl.ConnectionFactoryImpl;
-import Project.Classes.Infrastructure.dto.impl.EntityManagerImpl;
 import Project.Classes.Infrastructure.dto.service.OrdersService;
 import Project.Classes.Infrastructure.dto.service.RentsService;
 import Project.Classes.Infrastructure.dto.service.VehiclesService;
 import Project.Classes.MechanicService;
-import Project.Classes.interfaces.Fixer;
-import Project.Classes.interfaces.Manager;
+import Project.servlets.utils.InterfaceToImplementation;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,12 +17,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @WebServlet("/viewPlannedDiagnostic")
 public class ViewPlannedDiagnosticServlet extends HttpServlet {
+    private static final int SECONDS_TO_WAIT = 300;
+
     private OrdersService ordersService;
     private MechanicService mechanicService;
     private VehiclesService vehiclesService;
@@ -40,11 +32,6 @@ public class ViewPlannedDiagnosticServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         session = req.getSession();
 
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
         LocalTime time = (LocalTime) session.getAttribute("time");
 
         if (time == null){
@@ -53,26 +40,20 @@ public class ViewPlannedDiagnosticServlet extends HttpServlet {
             setNewBreaking();
         }
 
-        if (300 <= LocalTime.now().toSecondOfDay() - time.toSecondOfDay()){
+        if (SECONDS_TO_WAIT <= LocalTime.now().toSecondOfDay() - time.toSecondOfDay()){
             setNewBreaking();
-
             time = LocalTime.now();
         }
-        long timer = LocalTime.now().toSecondOfDay();
 
-        long timeToShow = timer - time.toSecondOfDay();
+        long timeToShow = LocalTime.now().toSecondOfDay() - time.toSecondOfDay();
 
         List<OrderDTO> list = ordersService.getAll();
 
         req.setAttribute("timeToShow", timeToShow);
         req.setAttribute("orders", list);
         req.setAttribute("vehicles", vehiclesService);
-        req.setAttribute("mechanics", mechanicService);
-        req.setAttribute("rents", rentsService);
 
-        RequestDispatcher dispatcher = this.getServletContext().getRequestDispatcher("/jsp/viewPlannedDiagnosticJSP.jsp");
-        dispatcher.forward(req,resp);
-
+        this.getServletContext().getRequestDispatcher("/jsp/viewPlannedDiagnosticJSP.jsp").forward(req, resp);
     }
 
     @Override
@@ -83,15 +64,8 @@ public class ViewPlannedDiagnosticServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        Map<Class<?>, Class<?>> interfaceToImplementation = new HashMap<>();
 
-        interfaceToImplementation.put(Manager.class, CollectionManager.class);
-        interfaceToImplementation.put(EntityManager.class, EntityManagerImpl.class);
-        interfaceToImplementation.put(ConnectionFactory.class, ConnectionFactoryImpl.class);
-        interfaceToImplementation.put(Context.class, ApplicationContext.class);
-        interfaceToImplementation.put(Fixer.class, MechanicService.class);
-
-        try {ApplicationContext context = new ApplicationContext("Project", interfaceToImplementation);
+        try {ApplicationContext context = new ApplicationContext("Project", InterfaceToImplementation.interfaceToImplementation);
             ordersService = context.getObject(OrdersService.class);
             mechanicService = context.getObject(MechanicService.class);
             rentsService = context.getObject(RentsService.class);
@@ -105,11 +79,13 @@ public class ViewPlannedDiagnosticServlet extends HttpServlet {
     }
 
     private void setNewBreaking(){
-        vehiclesService
-                .getAll()
-                .stream()
-                .map(vehicles -> MapperForDB.createVehicle(vehicles, rentsService.getAll()))
-                .forEach(mechanicService::repair);
+        ordersService.getAll()
+                .forEach(orderDTO -> mechanicService.repair(orderDTO.getId()));
+//        vehiclesService
+//                .getAll()
+//                .stream()
+//                .map(vehicles -> MapperForDB.createVehicle(vehicles, rentsService.getAll()))
+//                .forEach(mechanicService::repair);
 
         vehiclesService
                 .getAll()

@@ -6,12 +6,6 @@
 <%@ page import="java.util.concurrent.atomic.AtomicReference" %>
 <%@ page import="java.util.function.Predicate" %>
 <%@ page import="java.util.Optional" %>
-  Created by IntelliJ IDEA.
-  User: 23102
-  Date: 27.06.2024
-  Time: 0:16
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html >
 <head>
@@ -32,10 +26,10 @@
 
                 AtomicReference<Predicate<VehicleDTO>> filter = new AtomicReference<>(vehicles1 -> true);
 
-                Optional.ofNullable(request.getParameter("types"))
-                        .filter(s -> !s.isEmpty())
-                        .ifPresent(s -> {
-                    filter.set(filter.get().and(vehicles1 -> vehicles1.getModel().equals(s)));
+                Optional.ofNullable(request.getParameter("type"))
+                        .filter(type -> !type.isEmpty())
+                        .ifPresent(type -> {
+                    filter.set(filter.get().and(vehicleDTO -> vehicleDTO.getModel().equals(type)));
                 });
                 Optional.ofNullable(request.getParameter("model"))
                         .filter(s -> !s.isEmpty())
@@ -110,8 +104,8 @@
                     <div class="button">
                         <p>Тип</p>
                         <select name = "type">
-                            <option value="
-                                    <%=request.getParameter("type") != null?"selected":""%>">Не выбрано</option>
+                            <option value=
+                                    <%=request.getParameter("type") != null?"selected":""%>>Не выбрано</option>
                             <%for (String s : uniqTypes) {%>
                             <option value="<%=s%>"
                                 <%=(request.getParameter("type") != null && s.equals(request.getParameter("type")) ? "selected" : "")%>><%=s%></option>
@@ -121,8 +115,8 @@
                     <div class="button">
                         <p>Модель</p>
                         <select name="model" >
-                            <option value="
-                                    <%=request.getParameter("model") != null?"selected":""%>">Не выбрано</option>
+                            <option value=
+                                    <%=request.getParameter("model") != null?"selected":""%>>Не выбрано</option>
                             <%for (String s : uniqModels) {%>
                             <option value="<%=s%>"
                                     <%=(request.getParameter("model") != null && s.equals(request.getParameter("model")) ? "selected" : "")%>><%=s%></option>
@@ -132,8 +126,8 @@
                     <div class="button">
                         <p>Двигатель</p>
                         <select name="engine" >
-                            <option value="
-                                    <%=request.getParameter("engine") != null?"selected":""%>">Не выбрано</option>
+                            <option value=
+                                    <%=request.getParameter("engine") != null?"selected":""%>>Не выбрано</option>
                             <%for (String s : uniqEngineNames) {%>
                             <option value="<%=s%>"
                                     <%=(request.getParameter("engine") != null&& s.equals(request.getParameter("engine")) ? "selected" : "")%>><%=s%></option>
@@ -143,8 +137,8 @@
                     <div class="button">
                         <p>Цвет</p>
                         <select name="color" >
-                            <option value="
-                                    <%=request.getParameter("color") != null?"selected":""%>">Не выбрано</option>
+                            <option value=
+                                    <%=request.getParameter("color") != null?"selected":""%>>Не выбрано</option>
                             <%for (String s : uniqMColors) {%>
                             <option value="<%=s%>"
                                     <%=(request.getParameter("color") != null&& s.equals(request.getParameter("color")) ? "selected" : "")%>><%=s%></option>

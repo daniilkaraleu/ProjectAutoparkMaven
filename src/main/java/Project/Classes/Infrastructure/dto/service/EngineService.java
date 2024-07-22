@@ -5,6 +5,7 @@ import Project.Classes.Infrastructure.core.annotations.InitMethod;
 import Project.Classes.Infrastructure.dto.EntityManager;
 import Project.Classes.Infrastructure.dto.Service;
 import Project.Classes.Infrastructure.dto.entity.EngineDTO;
+import Project.Classes.Infrastructure.dto.entity.OrderDTO;
 
 import java.util.List;
 
@@ -30,5 +31,11 @@ public class EngineService implements Service<EngineDTO> {
     @Override
     public Long save(EngineDTO type) {
         return entityManager.save(type);
+    }
+    public void deleteData(){
+        entityManager.deleteData(EngineDTO.class);
+    }
+    public void delete(long id){
+        entityManager.delete(id, EngineDTO.class);
     }
 }

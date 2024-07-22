@@ -1,4 +1,4 @@
-package Project.Classes.Infrastructure.dto.entity;
+package Project.Classes.Infrastructure.dto.entity.mappers;
 
 import Project.Classes.*;
 import Project.Classes.Engines.DieselEngine;
@@ -6,6 +6,10 @@ import Project.Classes.Engines.ElectricalEngine;
 import Project.Classes.Engines.Engine;
 import Project.Classes.Engines.GasolineEngine;
 import Project.Classes.Infrastructure.core.annotations.Autowired;
+import Project.Classes.Infrastructure.dto.entity.EngineDTO;
+import Project.Classes.Infrastructure.dto.entity.RentDTO;
+import Project.Classes.Infrastructure.dto.entity.TypeDTO;
+import Project.Classes.Infrastructure.dto.entity.VehicleDTO;
 import Project.Classes.Infrastructure.dto.impl.ParserVehiclesFromDB;
 import Project.Classes.UtilFiles.LineProcessor;
 

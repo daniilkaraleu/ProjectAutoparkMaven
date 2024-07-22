@@ -1,7 +1,8 @@
-package Project.Classes.Infrastructure.dto.entity;
+package Project.Classes.Infrastructure.dto.entity.mappers;
 
 import Project.Classes.CollectionManager;
 import Project.Classes.Infrastructure.core.annotations.Autowired;
+import Project.Classes.Infrastructure.dto.entity.VehicleDTO;
 import Project.Classes.Vehicle;
 
 import java.util.List;
@@ -46,6 +47,23 @@ public class MapperForServlet {
                 .tankVolume(vehicle.getTankVolume())
                 .wasBroken(vehicle.getWasWorking())
                 .fixed(vehicle.getFixed())
+                .build()).toList();
+    }
+    public static List<VehicleDTO> getVehiclesDTOForCars(){
+
+        List<Vehicle> list = collectionManager.getVehicleCollection().getList();
+
+        return list.stream().map(vehicle -> VehicleDTO.builder()
+                .id(vehicle.getVehicleId())
+                .model(vehicle.getModel())
+                .type(vehicle.getVehicleType().getTypeId())
+                .color(vehicle.getColor().name())
+                .yearOfManufacture(vehicle.getYearOfManufacture())
+                .engine(vehicle.getEngine().getName())
+                .mass(vehicle.getMass())
+                .mileage(vehicle.getMileage())
+                .registrationNumber(vehicle.getRegistrationNumber())
+                .tankVolume(vehicle.getTankVolume())
                 .build()).toList();
     }
 }

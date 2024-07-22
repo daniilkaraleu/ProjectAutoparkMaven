@@ -29,7 +29,10 @@ public class OrdersService implements Service<OrderDTO> {
         return entityManager.save(orders);
     }
 
-    public void deleteData(Class<?> clazz){
-        entityManager.deleteData(clazz);
+    public void deleteData(){
+        entityManager.deleteData(OrderDTO.class);
+    }
+    public void delete(long id){
+        entityManager.delete(id, OrderDTO.class);
     }
 }

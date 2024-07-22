@@ -8,5 +8,4 @@ public enum VehicleColors {
     Gray,
     Blue,
     Yellow;
-
 }

@@ -37,4 +37,9 @@ public class EntityManagerImpl implements EntityManager {
     public void deleteData(Class<?> clazz) {
         dataBaseService.deleteData(clazz);
     }
+
+    @Override
+    public void delete(long id, Class<?> clazz) {
+        dataBaseService.delete(id, clazz);
+    }
 }
