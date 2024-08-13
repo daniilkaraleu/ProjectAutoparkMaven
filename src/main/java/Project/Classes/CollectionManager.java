@@ -1,5 +1,6 @@
 package Project.Classes;
 
+import Project.Classes.Collections.OrderCollection;
 import Project.Classes.Infrastructure.dto.entity.mappers.MapperForDB;
 import Project.Classes.Collections.RentCollection;
 import Project.Classes.Collections.TypesCollection;
@@ -17,6 +18,8 @@ public class CollectionManager implements Manager {
     private TypesCollection typeCollection;
     @Getter
     private RentCollection rentCollection;
+    @Getter
+    private OrderCollection orderCollection;
 //    @Autowired
 //    private ParseVehicleFromFile parser;
     @Autowired
@@ -32,6 +35,8 @@ public class CollectionManager implements Manager {
         typeCollection = new TypesCollection();
 
         rentCollection = new RentCollection();
+
+        orderCollection = new OrderCollection();
     }
 
     @InitMethod
@@ -44,13 +49,18 @@ public class CollectionManager implements Manager {
         parserFromDB.getVehiclesService()
                 .getAll()
                 .stream()
-                .map(vehicles -> MapperForDB.createVehicle(vehicles, parserFromDB.getRentsService().getAll()))
+                .map(MapperForDB::createVehicle)
                 .forEach(vehicle -> vehicleCollection.insert(vehicle));
         parserFromDB.getRentsService()
                 .getAll()
                 .stream()
                 .map(MapperForDB::createRent)
                 .forEach(rent -> rentCollection.insert(rent));
+        parserFromDB.getOrdersService()
+                .getAll()
+                .stream()
+                .map(MapperForDB::createOrder)
+                .forEach(order -> orderCollection.insert(order));
 
     }
 }

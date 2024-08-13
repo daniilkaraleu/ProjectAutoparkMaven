@@ -15,7 +15,7 @@ public class VehicleGarageManager {
         vehiclesService
                 .getAll()
                 .stream()
-                .map(vehicles -> MapperForDB.createVehicle(vehicles, rentsService.getAll()))
+                .map(MapperForDB::createVehicle)
                 .forEach(mechanicService::detectBreaking);
     }
 }

@@ -6,10 +6,7 @@ import Project.Classes.Engines.ElectricalEngine;
 import Project.Classes.Engines.Engine;
 import Project.Classes.Engines.GasolineEngine;
 import Project.Classes.Infrastructure.core.annotations.Autowired;
-import Project.Classes.Infrastructure.dto.entity.EngineDTO;
-import Project.Classes.Infrastructure.dto.entity.RentDTO;
-import Project.Classes.Infrastructure.dto.entity.TypeDTO;
-import Project.Classes.Infrastructure.dto.entity.VehicleDTO;
+import Project.Classes.Infrastructure.dto.entity.*;
 import Project.Classes.Infrastructure.dto.impl.ParserVehiclesFromDB;
 import Project.Classes.UtilFiles.LineProcessor;
 
@@ -21,22 +18,25 @@ public class MapperForDB {
     private static ParserVehiclesFromDB parserFromDB;
 
 
-    public MapperForDB(){}
+    public MapperForDB() {
+    }
 
-    public static VehicleType createVehicleType(TypeDTO types){
+    public static VehicleType createVehicleType(TypeDTO types) {
         return new VehicleType(types.getId(), types.getName(), types.getCoefTaxes());
     }
-    public static Vehicle createVehicle(VehicleDTO vehicles, List<RentDTO> rentsList){
+
+    public static Vehicle createVehicle(VehicleDTO vehicles) {
 
         VehicleColors color = VehicleColors.valueOf(vehicles.getColor());
         Engine engine = createEngine(parserFromDB.getEngineService().get(vehicles.getId()));
         VehicleType type = createVehicleType(parserFromDB.getTypesService().get(vehicles.getType()));
-        List<Rent> rentList = rentsList.stream().filter(rents -> rents.getVehicleId().equals(vehicles.getId())).map(MapperForDB::createRent).toList();
+        List<Rent> rentList = parserFromDB.getRentsService().getAll().stream().filter(rents -> rents.getVehicleId().equals(vehicles.getId())).map(MapperForDB::createRent).toList();
 
         return new Vehicle(vehicles.getId(), type, vehicles.getModel(), vehicles.getRegistrationNumber(), vehicles.getMass(),
                 vehicles.getYearOfManufacture(), vehicles.getMileage(), color, engine, vehicles.getTankVolume(), rentList);
     }
-    public static Rent createRent(RentDTO rents){
+
+    public static Rent createRent(RentDTO rents) {
         return Rent.builder()
                 .rentCost(rents.getRentCost())
                 .rentDate(rents.getRentDate())
@@ -44,11 +44,10 @@ public class MapperForDB {
                 .build();
     }
 
-    public static Engine createEngine(EngineDTO engineDTO){
+    public static Engine createEngine(EngineDTO engineDTO) {
         if (engineDTO.getName().equalsIgnoreCase("Diesel")) {
             return new DieselEngine(engineDTO.getEngineCapacity(), engineDTO.getFuelConsumption(), engineDTO.getEngineCapacity());
-        }
-        else if (engineDTO.getName().equalsIgnoreCase("Gasoline")) {
+        } else if (engineDTO.getName().equalsIgnoreCase("Gasoline")) {
             return new GasolineEngine(engineDTO.getEngineCapacity(), engineDTO.getFuelConsumption(), engineDTO.getEngineCapacity());
         } else {
             return new ElectricalEngine(engineDTO.getFuelConsumption(), engineDTO.getTankCapacity());
@@ -56,7 +55,7 @@ public class MapperForDB {
     }
 
     public static EngineDTO createEngineDTO(String line) {
-        String []data = LineProcessor.splitLine(line);
+        String[] data = LineProcessor.splitLine(line);
 
         Double engineCapacity = data[8].equals("Electrical") ? null : Double.parseDouble(data[9]);
         Double fuelConsumption = data[8].equals("Electrical") ? Double.parseDouble(data[9]) : Double.parseDouble(data[10]);
@@ -71,8 +70,8 @@ public class MapperForDB {
                 .build();
     }
 
-    public static RentDTO createRentDTO(String line){
-        String []data = LineProcessor.splitLine(line);
+    public static RentDTO createRentDTO(String line) {
+        String[] data = LineProcessor.splitLine(line);
 
         return RentDTO.builder()
                 .vehicleId(Long.parseLong(data[0]))
@@ -81,8 +80,8 @@ public class MapperForDB {
                 .build();
     }
 
-    public static TypeDTO createVehicleTypeDTO(String line){
-        String []data = LineProcessor.splitLine(line);
+    public static TypeDTO createVehicleTypeDTO(String line) {
+        String[] data = LineProcessor.splitLine(line);
 
         return TypeDTO.builder()
                 .name(data[1])
@@ -91,7 +90,7 @@ public class MapperForDB {
     }
 
     public static VehicleDTO createVehicleDTO(String line) {
-        String []data = LineProcessor.splitLine(line);
+        String[] data = LineProcessor.splitLine(line);
 
         Long vehicleType = Long.parseLong(data[1]);
         String model = data[2];
@@ -112,6 +111,21 @@ public class MapperForDB {
                 .tankVolume(tankVolume)
                 .engine(engine)
                 .color(data[7])
+                .build();
+    }
+
+    public static Order createOrder(OrderDTO orderDTO) {
+        return Order.builder()
+                .id(orderDTO.getId())
+                .oil(orderDTO.getOil())
+                .axis(orderDTO.getAxis())
+                .shaft(orderDTO.getShaft())
+                .sleeve(orderDTO.getSleeve())
+                .CV_joint(orderDTO.getCV_joint())
+                .timingBelt(orderDTO.getTimingBelt())
+                .sparkPlug(orderDTO.getSparkPlug())
+                .filter(orderDTO.getFilter())
+                .vehicle(createVehicle(parserFromDB.getVehiclesService().get(orderDTO.getVehicleId())))
                 .build();
     }
 }

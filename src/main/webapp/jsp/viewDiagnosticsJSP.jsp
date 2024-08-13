@@ -1,11 +1,5 @@
 <%@ page import="Project.Classes.Infrastructure.dto.entity.VehicleDTO" %>
-<%@ page import="java.util.List" %><%--
-  Created by IntelliJ IDEA.
-  User: 23102
-  Date: 30.06.2024
-  Time: 23:43
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -17,7 +11,7 @@
 <div class="center flex full-vh">
     <div class="vertical-center">
         <%
-            List<VehicleDTO> vehicles = (List<VehicleDTO>) request.getAttribute("cars");
+            List<VehicleDTO> vehicles = (List<VehicleDTO>) request.getAttribute("vehicles");
         %>
         <a class="button" href="${pageContext.request.contextPath}/">На главную</a>
         <br/>

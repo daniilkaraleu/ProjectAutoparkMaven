@@ -2,6 +2,8 @@ package Project.Classes;
 
 import Project.Classes.interfaces.Displayable;
 
+import java.util.Objects;
+
 public class VehicleType implements Displayable {
 
     private String typeName;
@@ -55,5 +57,15 @@ public class VehicleType implements Displayable {
     }
     public String toString() {
         return typeId + "     " + typeName + "      " + taxCoefficient;
+    }
+
+    public boolean equals(Object o){
+        if (o == this) return true;
+        if (o == null || o.getClass() != getClass()) return false;
+
+        VehicleType vehicleType = (VehicleType) o;
+
+        return this.taxCoefficient == vehicleType.taxCoefficient &&
+                this.typeName.equals(vehicleType.typeName);
     }
 }

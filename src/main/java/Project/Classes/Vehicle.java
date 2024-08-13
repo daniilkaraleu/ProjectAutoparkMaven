@@ -61,6 +61,7 @@ public class Vehicle implements Comparable<Vehicle> , Displayable, Cloneable {
                 this.tankVolume = tankVolume;
                 this.rentHistory = vehicleRents;
     }
+    public Vehicle(){}
 
 
     public double getCalcTaxPerMonth() {

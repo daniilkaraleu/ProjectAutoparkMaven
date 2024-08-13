@@ -18,6 +18,9 @@ public class ConnectionFactoryImpl implements ConnectionFactory {
     @SneakyThrows
     @Override
     public Connection getConnection() {
-        return connection = DriverManager.getConnection(url,user,password);
+        if (connection == null) {
+            return connection = DriverManager.getConnection(url,user,password);
+        }
+        return connection;
     }
 }

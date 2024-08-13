@@ -19,11 +19,13 @@ public class CacheImpl implements Cache {
 
     @Override
     public <T> T get(Class<T> clazz) {
-        return (T)cache.get(clazz.getName());
+        return clazz.cast(cache.get(clazz.getName()));
     }
 
     @Override
     public <T> void put(Class<T> clazz, T value) {
+        if (clazz == null)
+            throw new NullPointerException();
         cache.put(clazz.getName(), value);
     }
 }

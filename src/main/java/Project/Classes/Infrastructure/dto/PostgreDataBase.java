@@ -285,8 +285,9 @@ public class PostgreDataBase {
 
         String sql = String.format(SQLPatterns.DELETE_ALL_SQL_PATTERN.pattern, tableName);
 
-        try (Connection connection = connectionFactory.getConnection();
-             Statement statement = connection.createStatement()) {
+        Connection connection = connectionFactory.getConnection();
+
+        try (Statement statement = connection.createStatement()) {
             statement.execute(sql);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -299,8 +300,9 @@ public class PostgreDataBase {
 
         String sql = String.format(SQLPatterns.DELETE_SQL_PATTERN.pattern, tableName, id);
 
-        try (Connection connection = connectionFactory.getConnection();
-        Statement statement = connection.createStatement()){
+        Connection connection = connectionFactory.getConnection();
+
+        try (Statement statement = connection.createStatement()){
             statement.execute(sql);
         }
         catch (SQLException e){

@@ -1,8 +1,10 @@
 package Project.servlets;
 
+import Project.Classes.Infrastructure.dto.entity.VehicleDTO;
 import Project.Classes.Infrastructure.dto.entity.mappers.MapperForDB;
 import Project.Classes.Infrastructure.core.impl.ApplicationContext;
 import Project.Classes.Infrastructure.dto.entity.OrderDTO;
+import Project.Classes.Infrastructure.dto.entity.mappers.MapperForServlet;
 import Project.Classes.Infrastructure.dto.service.OrdersService;
 import Project.Classes.Infrastructure.dto.service.RentsService;
 import Project.Classes.Infrastructure.dto.service.VehiclesService;
@@ -37,6 +39,7 @@ public class ViewPlannedDiagnosticServlet extends HttpServlet {
         if (time == null){
             time = LocalTime.now();
             session.setAttribute("time", time);
+
             setNewBreaking();
         }
 
@@ -51,7 +54,8 @@ public class ViewPlannedDiagnosticServlet extends HttpServlet {
 
         req.setAttribute("timeToShow", timeToShow);
         req.setAttribute("orders", list);
-        req.setAttribute("vehicles", vehiclesService);
+        List<VehicleDTO> list1 = MapperForServlet.getVehiclesDTOForDiagnostics();
+        req.setAttribute("vehicles", list1);
 
         this.getServletContext().getRequestDispatcher("/jsp/viewPlannedDiagnosticJSP.jsp").forward(req, resp);
     }
@@ -66,9 +70,11 @@ public class ViewPlannedDiagnosticServlet extends HttpServlet {
 
 
         try {ApplicationContext context = new ApplicationContext("Project", InterfaceToImplementation.interfaceToImplementation);
+            context.getObject(MapperForServlet.class);
+
             ordersService = context.getObject(OrdersService.class);
             mechanicService = context.getObject(MechanicService.class);
-            rentsService = context.getObject(RentsService.class);
+//            rentsService = context.getObject(RentsService.class);
             vehiclesService = context.getObject(VehiclesService.class);
 
         } catch (Exception e){
@@ -81,16 +87,11 @@ public class ViewPlannedDiagnosticServlet extends HttpServlet {
     private void setNewBreaking(){
         ordersService.getAll()
                 .forEach(orderDTO -> mechanicService.repair(orderDTO.getId()));
-//        vehiclesService
-//                .getAll()
-//                .stream()
-//                .map(vehicles -> MapperForDB.createVehicle(vehicles, rentsService.getAll()))
-//                .forEach(mechanicService::repair);
 
         vehiclesService
                 .getAll()
                 .stream()
-                .map(vehicles -> MapperForDB.createVehicle(vehicles, rentsService.getAll()))
+                .map(MapperForDB::createVehicle)
                 .forEach(mechanicService::detectBreaking);
     }
 }
