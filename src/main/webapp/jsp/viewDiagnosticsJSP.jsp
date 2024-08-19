@@ -46,7 +46,7 @@
                 <td><%=vehicles1.getEngine()%></td>
                 <td><%=vehicles1.getMileage()%></td>
                 <td><%=vehicles1.getTankVolume()%></td>
-                <td><%=vehicles1.getWasBroken()?"Да" : "Нет"%></td>
+                <td><%=vehicles1.getWasBroken()?"Нет" : "Да"%></td>
                 <td><%=vehicles1.getFixed()?"Да" : "Нет"%></td>
             </tr>
             <%}%>
