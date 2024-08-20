@@ -15,7 +15,6 @@ import java.io.IOException;
 
 @WebServlet("/viewReport")
 public class ViewReportServlet extends HttpServlet {
-    private VehiclesService vehiclesService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

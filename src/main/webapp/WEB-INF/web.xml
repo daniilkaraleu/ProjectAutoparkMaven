@@ -15,7 +15,6 @@
     <servlet>
         <servlet-name>Types</servlet-name>
         <servlet-class>Project.servlets.ViewCarTypeServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
@@ -26,7 +25,6 @@
     <servlet>
         <servlet-name>Cars</servlet-name>
         <servlet-class>Project.servlets.ViewCarsServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
@@ -36,7 +34,6 @@
     <servlet>
         <servlet-name>Info</servlet-name>
         <servlet-class>Project.servlets.ViewInfoServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
@@ -46,7 +43,6 @@
     <servlet>
         <servlet-name>Report</servlet-name>
         <servlet-class>Project.servlets.ViewReportServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
@@ -56,7 +52,6 @@
     <servlet>
         <servlet-name>Diagnostics</servlet-name>
         <servlet-class>Project.servlets.ViewDiagnosticServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>

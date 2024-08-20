@@ -51,9 +51,9 @@
                     <td><%=vehicles1.getColor()%></td>
                     <td><%=vehicles1.getEngine()%></td>
                     <td><%=vehicles1.getMileage()%></td>
-                    <td><%=vehicles1.getRentIncome()%></td>
-                    <td><%=vehicles1.getTax()%></td>
-                    <td><%=vehicles1.getIncome()%></td>
+                    <td><%=Math.ceil(vehicles1.getRentIncome()* 1000) / 1000%></td>
+                    <td><%=Math.ceil(vehicles1.getTax()* 1000) / 1000%></td>
+                    <td><%=Math.ceil(vehicles1.getIncome()* 1000) / 1000%></td>
                 </tr>
                 <%}%>
             </table>
